@@ -1,23 +1,17 @@
+const ProductService = require("../services/ProductService");
+
 class ProductController {
-    get = (req, res, next) => {
+    
+    create = async (req, res, next) => {
         try {
-            let productId = req.params.productId;
-            console.log(productId);
-            res.status(200).json({ msg: `Get productId: ${productId} `});
-        } catch (error) {
-            throw error;
-        }
-    };
+            const { name, producer, yearOfManufacture, quantity, price } = req.body;
 
+            let data = {  name, producer, yearOfManufacture, quantity, price }
 
-    create = (req, res, next) => {
-        try {
-            const { name, code, price, quantity } = req.body;
+            const product = await ProductService.create(data);
+
             res.status(201).json({ 
-                name, 
-                code, 
-                price, 
-                quantity 
+                product
             })
         } catch (error) {
             throw error;
@@ -25,28 +19,61 @@ class ProductController {
     };
 
 
-    update = (req, res, next) => {
+    getAll = async (req, res, next) => {
         try {
-            const { name, code, price, quantity } = req.body;
-            res.status(200).json({ 
-                name, 
-                code, 
-                price, 
-                quantity 
-            })
+
+            const products = await ProductService.getAll();
+
+            res.status(200).json({
+                products
+            });
         } catch (error) {
             throw error;
         }
     };
 
 
-    delete = (req, res, next) => {
+    update = async (req, res, next) => {
         try {
-            let id = req.params.id;
-            console.log(id);
-            res.status(200).json({ msg:`delete product: ${id}` });
+            const { name, producer, yearOfManufacture, quantity, price} = req.body;
+            // goi den tang service
+
+            const { id } = req.params;
+
+            let data = {
+                name, producer, yearOfManufacture, quantity, price
+            }
+            
+            const result = await ProductService.update(id, data);
+            if (result) {
+                res.status(200).json({
+                    msg: 'Updated'
+                });              
+            } else {
+                throw new error('Error updating');
+            }
+
         } catch (error) {
-            throw error;
+           throw error;
+        }
+    };
+
+
+    delete = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            
+
+            const result = await ProductService.delete(id);
+            if (result) {
+                res.status(200).json({
+                    msg: 'Deleted'
+                });              
+            } else {
+                throw new error('Error deleting');
+            }
+        } catch (error) {
+           throw error;
         }
     };
     

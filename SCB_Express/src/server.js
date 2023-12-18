@@ -8,6 +8,11 @@ var bodyParser = require('body-parser');
 const errorHandle = require('./middlewares/errorHandler');
 require('dotenv').config()
 
+const db = require('./configs/mongodb');
+
+// Connect to DB
+db.connect();
+
 
 
 // parse application/x-www-form-urlencoded

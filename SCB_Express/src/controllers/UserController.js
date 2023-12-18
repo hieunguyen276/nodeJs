@@ -1,47 +1,86 @@
+const UserService = require("../services/UserService");
+
+
 class UserController {
     // Các hàm xử lý
-    get = (req, res, next) => {
+
+
+    create = async (req, res, next) => {
         try {
-            let userid = req.params.userid;
-            console.log(userid);
-            res.status(200).json({ msg: `Get userid: ${userid} `});
+            const { username, email, phone, age } = req.body;
+            // goi den tang service
+
+            let data = {
+                username, email, phone, age
+            }
+            
+            const user = await UserService.create(data);
+
+            res.status(200).json({
+                user
+            });
+            
+
+        } catch (error) {
+           throw error;
+        }
+    };
+
+
+    getAll = async (req, res, next) => {
+        try {
+
+            const users = await UserService.getAll();
+
+            res.status(200).json({
+                users
+            });
         } catch (error) {
             throw error;
         }
     };
 
 
-    create = (req, res, next) => {
+    
+    update = async (req, res, next) => {
         try {
-            const { username, password } = req.body;
-            res.status(200).json({
-                username,
-                password
-            })
+            const { username, email, phone, age } = req.body;
+            // goi den tang service
+
+            const { id } = req.params;
+
+            let data = {
+                username, email, phone, age
+            }
+            
+            const result = await UserService.update(id, data);
+            if (result) {
+                res.status(200).json({
+                    msg: 'Updated'
+                });              
+            } else {
+                throw new error('Error updating');
+            }
+
         } catch (error) {
            throw error;
         }
     };
 
 
-    update = (req, res, next) => {
+    delete = async (req, res, next) => {
         try {
-            const { username, password } = req.body;
-            res.status(200).json({ 
-            username, 
-            password
-            })
-        } catch (error) {
-           throw error;
-        }
-    };
+            const { id } = req.params;
+            
 
-
-    delete = (req, res, next) => {
-        try {
-            let id = req.params.id;
-            console.log(id);
-            res.status(200).json({ msg:`delete user: ${id}` });
+            const result = await UserService.delete(id);
+            if (result) {
+                res.status(200).json({
+                    msg: 'Deleted'
+                });              
+            } else {
+                throw new error('Error deleting');
+            }
         } catch (error) {
            throw error;
         }
